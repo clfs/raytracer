@@ -1,0 +1,5 @@
+[package]
+name = "rtlib"
+version = "0.1.0"
+authors = ["Calvin Figuereo-Supraner <mail@calvin.page>"]
+edition = "2018"

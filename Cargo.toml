@@ -1,0 +1,10 @@
+[package]
+name = "raytracer"
+version = "0.1.0"
+authors = ["Calvin Figuereo-Supraner <mail@calvin.page>"]
+edition = "2018"
+
+[workspace]
+
+[dependencies]
+rtlib = { path = "rtlib" }
