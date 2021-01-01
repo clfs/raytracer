@@ -89,27 +89,39 @@ fn main() {
 }
 
 fn ray_color(r: &Ray) -> Color {
-    if hit::hit_sphere(
+    // Try t once.
+    let t = hit::hit_sphere(
         &Point3 {
             z: -1.0,
             ..Default::default()
         },
         0.5,
         r,
-    ) {
-        return Color {
-            r: 1.0,
-            ..Default::default()
-        };
+    );
+    if t > 0.0 {
+        let n = (r.at(t).to_vec3()
+            - Vec3 {
+                z: -1.0,
+                ..Default::default()
+            })
+        .unit();
+        return 0.5
+            * Color {
+                r: n.x + 1.0,
+                g: n.y + 1.0,
+                b: n.z + 1.0,
+            };
     }
-    let t = 0.5 * (r.direction.unit().y + 1.0);
-    (1.0 - t)
+
+    // Otherwise, try t again. Not sure if original t should be mut yet.
+    let tt = 0.5 * (r.direction.unit().y + 1.0);
+    (1.0 - tt)
         * Color {
             r: 1.0,
             g: 1.0,
             b: 1.0,
         }
-        + t * Color {
+        + tt * Color {
             r: 0.5,
             g: 0.7,
             b: 1.0,
