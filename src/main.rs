@@ -4,9 +4,19 @@ use clap::Clap;
 use image::ImageBuffer;
 
 use rtlib::color::Color;
+use rtlib::point3::Point3;
+use rtlib::ray::Ray;
+use rtlib::vec3::Vec3;
 
-const IMAGE_WIDTH: u32 = 256;
-const IMAGE_HEIGHT: u32 = 256;
+// Image
+const ASPECT_RATIO: f64 = 16.0 / 9.0;
+const IMAGE_WIDTH: u32 = 400;
+const IMAGE_HEIGHT: u32 = (IMAGE_WIDTH as f64 / ASPECT_RATIO) as u32;
+
+// Camera
+const VIEWPORT_HEIGHT: f64 = 2.0;
+const VIEWPORT_WIDTH: f64 = ASPECT_RATIO * VIEWPORT_HEIGHT;
+const FOCAL_LENGTH: f64 = 1.0;
 
 #[derive(Clap)]
 #[clap(
@@ -23,15 +33,41 @@ fn main() {
 
     let mut imgbuf = ImageBuffer::new(IMAGE_WIDTH, IMAGE_HEIGHT);
 
+    let origin = Point3::new();
+    let horizontal = Vec3 {
+        x: VIEWPORT_WIDTH,
+        ..Default::default()
+    };
+    let vertical = Vec3 {
+        y: VIEWPORT_HEIGHT,
+        ..Default::default()
+    };
+    let lower_left_corner = origin
+        - horizontal / 2.0
+        - vertical / 2.0
+        - Vec3 {
+            z: FOCAL_LENGTH,
+            ..Default::default()
+        };
+
     for (x, y, pixel) in imgbuf.enumerate_pixels_mut() {
-        *pixel = image::Rgb(
-            Color {
-                r: x as f64 / ((IMAGE_WIDTH - 1) as f64),
-                g: y as f64 / ((IMAGE_HEIGHT - 1) as f64),
-                b: 0.25,
-            }
-            .to_rgb(),
-        )
+        // `enumerate_pixels_mut` places the origin at the top left corner, but
+        // the author places the origin at the bottom left corner. Luckily, we
+        // can adjust on the fly by altering the y-coordinate.
+        let yy = IMAGE_HEIGHT - y - 1;
+
+        if x == 0 {
+            println!("\rScanlines remaining: {}", yy);
+        }
+
+        let u = x as f64 / (IMAGE_WIDTH - 1) as f64;
+        let v = yy as f64 / (IMAGE_HEIGHT - 1) as f64;
+        let r = Ray {
+            origin,
+            direction: (lower_left_corner + u * horizontal + v * vertical - origin).to_vec3(),
+        };
+
+        *pixel = image::Rgb(ray_color(&r).to_rgb())
     }
 
     // There's a silly race condition here, where another process might create
@@ -46,4 +82,19 @@ fn main() {
             .save(&opts.filename)
             .expect("failed to write to file"),
     }
+}
+
+fn ray_color(r: &Ray) -> Color {
+    let t = 0.5 * (r.direction.unit().y + 1.0);
+    (1.0 - t)
+        * Color {
+            r: 1.0,
+            g: 1.0,
+            b: 1.0,
+        }
+        + t * Color {
+            r: 0.5,
+            g: 0.7,
+            b: 1.0,
+        }
 }

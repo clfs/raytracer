@@ -8,23 +8,23 @@ pub struct Vec3 {
 }
 
 impl Vec3 {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Default::default()
     }
 
-    fn mag(self) -> f64 {
+    pub fn mag(self) -> f64 {
         self.mag_squared().sqrt()
     }
 
-    fn mag_squared(self) -> f64 {
+    pub fn mag_squared(self) -> f64 {
         self.x * self.x + self.y * self.y + self.z * self.z
     }
 
-    fn dot(self, other: Self) -> f64 {
+    pub fn dot(self, other: Self) -> f64 {
         self.x * other.x + self.y * other.y + self.z * other.z
     }
 
-    fn cross(self, other: Self) -> Self {
+    pub fn cross(self, other: Self) -> Self {
         Self {
             x: self.y * other.z - self.z * other.y,
             y: self.z * other.x - self.x * other.z,
@@ -32,7 +32,7 @@ impl Vec3 {
         }
     }
 
-    fn unit(&self) -> Self {
+    pub fn unit(&self) -> Self {
         *self / self.mag()
     }
 }

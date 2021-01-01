@@ -10,8 +10,16 @@ pub struct Point3 {
 }
 
 impl Point3 {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Default::default()
+    }
+
+    pub fn to_vec3(&self) -> Vec3 {
+        Vec3 {
+            x: self.x,
+            y: self.y,
+            z: self.z,
+        }
     }
 }
 
@@ -49,6 +57,18 @@ impl ops::Sub for Point3 {
     type Output = Self;
 
     fn sub(self, rhs: Self) -> Self::Output {
+        Self {
+            x: self.x - rhs.x,
+            y: self.y - rhs.y,
+            z: self.z - rhs.z,
+        }
+    }
+}
+
+impl ops::Sub<Vec3> for Point3 {
+    type Output = Self;
+
+    fn sub(self, rhs: Vec3) -> Self::Output {
         Self {
             x: self.x - rhs.x,
             y: self.y - rhs.y,
