@@ -1,5 +1,7 @@
 use std::ops;
 
+use crate::point3::Point3;
+
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct Vec3 {
     pub x: f64,
@@ -34,6 +36,14 @@ impl Vec3 {
 
     pub fn unit(&self) -> Self {
         *self / self.mag()
+    }
+
+    pub fn to_point3(&self) -> Point3 {
+        Point3 {
+            x: self.x,
+            y: self.y,
+            z: self.z,
+        }
     }
 }
 

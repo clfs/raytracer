@@ -4,6 +4,7 @@ use clap::Clap;
 use image::ImageBuffer;
 
 use rtlib::color::Color;
+use rtlib::hit;
 use rtlib::point3::Point3;
 use rtlib::ray::Ray;
 use rtlib::vec3::Vec3;
@@ -31,6 +32,16 @@ struct Opts {
 fn main() {
     let opts: Opts = Opts::parse();
 
+    // There's a silly race condition here, where another process might create
+    // the file _after_ the no-exist check, but _before_ the write attempt. This
+    // is avoidable by using `std::fs::OpenOptions`, but I couldn't figure out
+    // how to serialize an `ImageBuffer` to raw bytes (for using File methods).
+    // Instead, I'm just using the provided (dangerous) `save` method, which can
+    // overwrite files. I should change this at some point.
+    if Path::new(&opts.filename).exists() {
+        panic!("file already exists")
+    }
+
     let mut imgbuf = ImageBuffer::new(IMAGE_WIDTH, IMAGE_HEIGHT);
 
     let origin = Point3::new();
@@ -42,13 +53,14 @@ fn main() {
         y: VIEWPORT_HEIGHT,
         ..Default::default()
     };
-    let lower_left_corner = origin
+    let lower_left_corner: Point3 = (origin.to_vec3()
         - horizontal / 2.0
         - vertical / 2.0
         - Vec3 {
             z: FOCAL_LENGTH,
             ..Default::default()
-        };
+        })
+    .to_point3();
 
     for (x, y, pixel) in imgbuf.enumerate_pixels_mut() {
         // `enumerate_pixels_mut` places the origin at the top left corner, but
@@ -64,27 +76,32 @@ fn main() {
         let v = yy as f64 / (IMAGE_HEIGHT - 1) as f64;
         let r = Ray {
             origin,
-            direction: (lower_left_corner + u * horizontal + v * vertical - origin).to_vec3(),
+            direction: lower_left_corner.to_vec3() + u * horizontal + v * vertical
+                - origin.to_vec3(),
         };
 
         *pixel = image::Rgb(ray_color(&r).to_rgb())
     }
 
-    // There's a silly race condition here, where another process might create
-    // the file _after_ the no-exist check, but _before_ the write attempt. This
-    // is avoidable by using `std::fs::OpenOptions`, but I couldn't figure out
-    // how to serialize an `ImageBuffer` to raw bytes (for using File methods).
-    // Instead, I'm just using the provided (dangerous) `save` method, which can
-    // overwrite files. I should change this at some point.
-    match Path::new(&opts.filename).exists() {
-        true => panic!("file already exists"),
-        false => imgbuf
-            .save(&opts.filename)
-            .expect("failed to write to file"),
-    }
+    imgbuf
+        .save(&opts.filename)
+        .expect("failed to write to file")
 }
 
 fn ray_color(r: &Ray) -> Color {
+    if hit::hit_sphere(
+        &Point3 {
+            z: -1.0,
+            ..Default::default()
+        },
+        0.5,
+        r,
+    ) {
+        return Color {
+            r: 1.0,
+            ..Default::default()
+        };
+    }
     let t = 0.5 * (r.direction.unit().y + 1.0);
     (1.0 - t)
         * Color {

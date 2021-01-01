@@ -1,6 +1,6 @@
 use std::ops;
 
-use super::vec3::Vec3;
+use crate::vec3::Vec3;
 
 #[derive(Clone, Copy, Default)]
 pub struct Point3 {
@@ -35,18 +35,6 @@ impl ops::Add for Point3 {
     }
 }
 
-impl ops::Add<Vec3> for Point3 {
-    type Output = Self;
-
-    fn add(self, rhs: Vec3) -> Self::Output {
-        Self {
-            x: self.x + rhs.x,
-            y: self.y + rhs.y,
-            z: self.z + rhs.z,
-        }
-    }
-}
-
 impl ops::AddAssign for Point3 {
     fn add_assign(&mut self, rhs: Self) {
         *self = *self + rhs
@@ -57,18 +45,6 @@ impl ops::Sub for Point3 {
     type Output = Self;
 
     fn sub(self, rhs: Self) -> Self::Output {
-        Self {
-            x: self.x - rhs.x,
-            y: self.y - rhs.y,
-            z: self.z - rhs.z,
-        }
-    }
-}
-
-impl ops::Sub<Vec3> for Point3 {
-    type Output = Self;
-
-    fn sub(self, rhs: Vec3) -> Self::Output {
         Self {
             x: self.x - rhs.x,
             y: self.y - rhs.y,
