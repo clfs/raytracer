@@ -26,17 +26,8 @@ impl Hittable for Sphere {
             return false;
         }
 
-        // Find the nearest root that lies in the acceptable range.
-        let sqrtd = discriminant.sqrt();
-        let minus_root = (-half_b - sqrtd) / a;
-        if minus_root < t_min || minus_root > t_max {
-            let plus_root = (-half_b + sqrtd) / a;
-            if plus_root < t_min || plus_root > t_max {
-                return false;
-            }
-        }
-
         // Pick a root that lies in the acceptable range, if possible.
+        let sqrtd = discriminant.sqrt();
         let sub_root = (-half_b - sqrtd) / a;
         let add_root = (-half_b + sqrtd) / a;
         let root: Option<f64> = if t_min < sub_root && sub_root < t_max {

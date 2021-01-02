@@ -1,6 +1,6 @@
 use std::ops;
 
-#[derive(Default)]
+#[derive(Clone, Copy, Default)]
 pub struct Color {
     pub r: f64,
     pub g: f64,
@@ -12,11 +12,25 @@ impl Color {
         Default::default()
     }
 
-    pub fn to_rgb(&self) -> [u8; 3] {
+    pub fn to_rgb(&self, samples_per_pixel: u32) -> [u8; 3] {
+        // std::f64::clamp is nightly-only :(
+        fn clamp(x: f64, min: f64, max: f64) -> f64 {
+            if x < min {
+                min
+            } else if x > max {
+                max
+            } else {
+                x
+            }
+        }
+
+        // I'm also not a fan of how the author's set this up. A good TODO item
+        // would be finding a better way to express this.
+        let scale = 1.0 / samples_per_pixel as f64;
         [
-            (self.r * 255.999) as u8,
-            (self.g * 255.999) as u8,
-            (self.b * 255.999) as u8,
+            (256.0 * clamp(self.r * scale, 0.0, 0.999)) as u8,
+            (256.0 * clamp(self.g * scale, 0.0, 0.999)) as u8,
+            (256.0 * clamp(self.b * scale, 0.0, 0.999)) as u8,
         ]
     }
 }
@@ -30,6 +44,12 @@ impl ops::Add for Color {
             g: self.g + rhs.g,
             b: self.b + rhs.b,
         }
+    }
+}
+
+impl ops::AddAssign for Color {
+    fn add_assign(&mut self, rhs: Self) {
+        *self = *self + rhs;
     }
 }
 
