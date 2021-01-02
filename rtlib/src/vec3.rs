@@ -1,5 +1,6 @@
 use std::ops;
 
+use crate::color::Color;
 use crate::point3::Point3;
 
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
@@ -43,6 +44,14 @@ impl Vec3 {
             x: self.x,
             y: self.y,
             z: self.z,
+        }
+    }
+
+    pub fn to_color(&self) -> Color {
+        Color {
+            r: self.x,
+            g: self.y,
+            b: self.z,
         }
     }
 }

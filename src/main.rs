@@ -3,11 +3,14 @@ use std::path::Path;
 use clap::Clap;
 use image::ImageBuffer;
 
-use rtlib::color::Color;
-use rtlib::hit;
-use rtlib::point3::Point3;
-use rtlib::ray::Ray;
-use rtlib::vec3::Vec3;
+use rtlib::{
+    color::Color,
+    hit::{HitRecord, Hittable, HittableObjects},
+    point3::Point3,
+    ray::Ray,
+    sphere::Sphere,
+    vec3::Vec3,
+};
 
 // Image
 const ASPECT_RATIO: f64 = 16.0 / 9.0;
@@ -44,6 +47,26 @@ fn main() {
 
     let mut imgbuf = ImageBuffer::new(IMAGE_WIDTH, IMAGE_HEIGHT);
 
+    // Set up the world.
+    let mut world = HittableObjects::new();
+    world.add(Sphere {
+        center: Point3 {
+            x: 0.0,
+            y: 0.0,
+            z: -1.0,
+        },
+        radius: 0.5,
+    });
+    world.add(Sphere {
+        center: Point3 {
+            x: 0.0,
+            y: -100.5,
+            z: -1.0,
+        },
+        radius: 100.0,
+    });
+
+    // Set up some more camera variables.
     let origin = Point3::new();
     let horizontal = Vec3 {
         x: VIEWPORT_WIDTH,
@@ -80,7 +103,7 @@ fn main() {
                 - origin.to_vec3(),
         };
 
-        *pixel = image::Rgb(ray_color(&r).to_rgb())
+        *pixel = image::Rgb(ray_color(&r, &world).to_rgb())
     }
 
     imgbuf
@@ -88,42 +111,27 @@ fn main() {
         .expect("failed to write to file")
 }
 
-fn ray_color(r: &Ray) -> Color {
-    // Try t once.
-    let t = hit::hit_sphere(
-        &Point3 {
-            z: -1.0,
-            ..Default::default()
-        },
-        0.5,
-        r,
-    );
-    if t > 0.0 {
-        let n = (r.at(t).to_vec3()
-            - Vec3 {
-                z: -1.0,
-                ..Default::default()
-            })
-        .unit();
+fn ray_color(ray: &Ray, world: &HittableObjects) -> Color {
+    let mut rec = HitRecord::new();
+    if world.hit(&ray, 0.0, std::f64::INFINITY, &mut rec) {
         return 0.5
-            * Color {
-                r: n.x + 1.0,
-                g: n.y + 1.0,
-                b: n.z + 1.0,
-            };
-    }
-
-    // Otherwise, try t again. Not sure if original t should be mut yet.
-    let tt = 0.5 * (r.direction.unit().y + 1.0);
-    (1.0 - tt)
+            * (rec.normal.to_color()
+                + Color {
+                    r: 1.0,
+                    g: 1.0,
+                    b: 1.0,
+                });
+    };
+    let t = 0.5 * (ray.direction.unit().y + 1.0);
+    return (1.0 - t)
         * Color {
             r: 1.0,
             g: 1.0,
             b: 1.0,
         }
-        + tt * Color {
+        + t * Color {
             r: 0.5,
             g: 0.7,
             b: 1.0,
-        }
+        };
 }

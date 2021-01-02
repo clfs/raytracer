@@ -58,3 +58,15 @@ impl ops::SubAssign for Point3 {
         *self = *self - rhs
     }
 }
+
+impl ops::Div<f64> for Point3 {
+    type Output = Self;
+
+    fn div(self, rhs: f64) -> Self::Output {
+        Self {
+            x: self.x / rhs,
+            y: self.y / rhs,
+            z: self.z / rhs,
+        }
+    }
+}

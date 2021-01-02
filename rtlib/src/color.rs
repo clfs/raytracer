@@ -44,3 +44,15 @@ impl ops::Mul<Color> for f64 {
         }
     }
 }
+
+impl ops::Sub for Color {
+    type Output = Self;
+
+    fn sub(self, rhs: Self) -> Self::Output {
+        Self {
+            r: self.r - rhs.r,
+            g: self.g - rhs.g,
+            b: self.b - rhs.b,
+        }
+    }
+}
