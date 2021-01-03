@@ -13,24 +13,11 @@ impl Color {
     }
 
     pub fn to_rgb(&self, samples_per_pixel: u32) -> [u8; 3] {
-        // std::f64::clamp is nightly-only :(
-        fn clamp(x: f64, min: f64, max: f64) -> f64 {
-            if x < min {
-                min
-            } else if x > max {
-                max
-            } else {
-                x
-            }
-        }
-
-        // I'm also not a fan of how the author's set this up. A good TODO item
-        // would be finding a better way to express this.
         let scale = 1.0 / samples_per_pixel as f64;
         [
-            (256.0 * clamp(self.r * scale, 0.0, 0.999)) as u8,
-            (256.0 * clamp(self.g * scale, 0.0, 0.999)) as u8,
-            (256.0 * clamp(self.b * scale, 0.0, 0.999)) as u8,
+            (256.0 * (self.r * scale).max(0.0).min(0.999)) as u8,
+            (256.0 * (self.g * scale).max(0.0).min(0.999)) as u8,
+            (256.0 * (self.b * scale).max(0.0).min(0.999)) as u8,
         ]
     }
 }
