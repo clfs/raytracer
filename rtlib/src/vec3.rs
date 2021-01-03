@@ -1,5 +1,7 @@
 use std::ops;
 
+use rand::Rng;
+
 use crate::color::Color;
 use crate::point3::Point3;
 
@@ -11,8 +13,25 @@ pub struct Vec3 {
 }
 
 impl Vec3 {
+    pub fn new() -> Self {
+        Default::default()
+    }
+
     pub fn zero() -> Self {
         Default::default()
+    }
+
+    pub fn rand_in_unit_sphere() -> Self {
+        let mut rng = rand::thread_rng();
+        let mut v = Vec3::new();
+        loop {
+            v.x = rng.gen();
+            v.y = rng.gen();
+            v.z = rng.gen();
+            if v.mag_squared() < 1.0 {
+                return v;
+            }
+        }
     }
 
     pub fn mag(self) -> f64 {

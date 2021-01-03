@@ -11,6 +11,7 @@ use rtlib::{
     point3::Point3,
     ray::Ray,
     sphere::Sphere,
+    vec3::Vec3,
 };
 
 // Image
@@ -18,6 +19,7 @@ const ASPECT_RATIO: f64 = 16.0 / 9.0;
 const IMAGE_WIDTH: u32 = 400;
 const IMAGE_HEIGHT: u32 = (IMAGE_WIDTH as f64 / ASPECT_RATIO) as u32;
 const SAMPLES_PER_PIXEL: u32 = 100;
+const MAX_DEPTH: u32 = 50;
 
 #[derive(Clap)]
 #[clap(
@@ -82,7 +84,7 @@ fn main() {
             let u = (x as f64 + rng.gen::<f64>()) / ((IMAGE_WIDTH - 1) as f64);
             let v = (yy as f64 + rng.gen::<f64>()) / ((IMAGE_HEIGHT - 1) as f64);
             let ray = camera.get_ray(u, v);
-            color += ray_color(&ray, &world);
+            color += ray_color(&ray, &world, MAX_DEPTH);
         }
 
         *pixel = image::Rgb(color.to_rgb(SAMPLES_PER_PIXEL))
@@ -93,17 +95,31 @@ fn main() {
         .expect("failed to write to file")
 }
 
-fn ray_color(ray: &Ray, world: &HittableObjects) -> Color {
+fn ray_color(ray: &Ray, world: &HittableObjects, depth: u32) -> Color {
+    if depth == 0 {
+        return Color {
+            r: 0.0,
+            g: 0.0,
+            b: 0.0,
+        };
+    }
+
     let mut rec = HitRecord::new();
+
     if world.hit(&ray, 0.0, std::f64::INFINITY, &mut rec) {
+        let target: Point3 =
+            rec.p + rec.normal.to_point3() + Vec3::rand_in_unit_sphere().to_point3();
         return 0.5
-            * (rec.normal.to_color()
-                + Color {
-                    r: 1.0,
-                    g: 1.0,
-                    b: 1.0,
-                });
-    };
+            * ray_color(
+                &Ray {
+                    origin: rec.p,
+                    direction: (target - rec.p).to_vec3(),
+                },
+                &world,
+                depth - 1,
+            );
+    }
+
     let t = 0.5 * (ray.direction.unit().y + 1.0);
     return (1.0 - t)
         * Color {
