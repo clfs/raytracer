@@ -10,7 +10,7 @@ pub struct Point3 {
 }
 
 impl Point3 {
-    pub fn new() -> Self {
+    pub fn zero() -> Self {
         Default::default()
     }
 
