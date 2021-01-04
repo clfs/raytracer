@@ -87,9 +87,15 @@ impl ops::Add for Vec3 {
     }
 }
 
-impl ops::AddAssign for Vec3 {
-    fn add_assign(&mut self, rhs: Self) {
-        *self = *self + rhs
+impl ops::Add<Point3> for Vec3 {
+    type Output = Point3;
+
+    fn add(self, rhs: Point3) -> Self::Output {
+        Point3 {
+            x: self.x + rhs.x,
+            y: self.y + rhs.y,
+            z: self.z + rhs.z,
+        }
     }
 }
 
@@ -102,12 +108,6 @@ impl ops::Div<f64> for Vec3 {
             y: self.y / rhs,
             z: self.z / rhs,
         }
-    }
-}
-
-impl ops::DivAssign<f64> for Vec3 {
-    fn div_assign(&mut self, rhs: f64) {
-        *self = *self / rhs
     }
 }
 
@@ -135,12 +135,6 @@ impl ops::Mul<Vec3> for f64 {
     }
 }
 
-impl ops::MulAssign<f64> for Vec3 {
-    fn mul_assign(&mut self, rhs: f64) {
-        *self = *self * rhs
-    }
-}
-
 impl ops::Neg for Vec3 {
     type Output = Self;
 
@@ -165,8 +159,14 @@ impl ops::Sub for Vec3 {
     }
 }
 
-impl ops::SubAssign for Vec3 {
-    fn sub_assign(&mut self, rhs: Self) {
-        *self = *self - rhs
+impl ops::Sub<Point3> for Vec3 {
+    type Output = Point3;
+
+    fn sub(self, rhs: Point3) -> Self::Output {
+        Point3 {
+            x: self.x - rhs.x,
+            y: self.y - rhs.y,
+            z: self.z - rhs.z,
+        }
     }
 }

@@ -17,7 +17,7 @@ impl Sphere {
 impl Hittable for Sphere {
     fn hit(&self, ray: &Ray, t_min: f64, t_max: f64, rec: &mut HitRecord) -> bool {
         // Compute the discriminant.
-        let oc = (ray.origin - self.center).to_vec3();
+        let oc = ray.origin - self.center;
         let a = ray.direction.mag_squared();
         let half_b = oc.dot(ray.direction);
         let c = oc.mag_squared() - self.radius * self.radius;
@@ -44,7 +44,7 @@ impl Hittable for Sphere {
             None => return false, // No hit.
         }
         rec.p = ray.at(rec.t);
-        let outward_normal = ((rec.p - self.center) / self.radius).to_vec3();
+        let outward_normal = (rec.p - self.center) / self.radius;
         rec.set_face_normal(ray, &outward_normal);
 
         true

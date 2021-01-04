@@ -107,13 +107,12 @@ fn ray_color(ray: &Ray, world: &HittableObjects, depth: u32) -> Color {
     let mut rec = HitRecord::new();
 
     if world.hit(&ray, 0.0, std::f64::INFINITY, &mut rec) {
-        let target: Point3 =
-            rec.p + rec.normal.to_point3() + Vec3::rand_in_unit_sphere().to_point3();
+        let target: Point3 = rec.p + rec.normal + Vec3::rand_in_unit_sphere();
         return 0.5
             * ray_color(
                 &Ray {
                     origin: rec.p,
-                    direction: (target - rec.p).to_vec3(),
+                    direction: target - rec.p,
                 },
                 &world,
                 depth - 1,
