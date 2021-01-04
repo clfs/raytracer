@@ -2,7 +2,6 @@ use std::ops;
 
 use rand::Rng;
 
-use crate::color::Color;
 use crate::point3::Point3;
 
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
@@ -56,22 +55,6 @@ impl Vec3 {
 
     pub fn unit(&self) -> Self {
         *self / self.mag()
-    }
-
-    pub fn to_point3(&self) -> Point3 {
-        Point3 {
-            x: self.x,
-            y: self.y,
-            z: self.z,
-        }
-    }
-
-    pub fn to_color(&self) -> Color {
-        Color {
-            r: self.x,
-            g: self.y,
-            b: self.z,
-        }
     }
 }
 

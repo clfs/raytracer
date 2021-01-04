@@ -17,14 +17,6 @@ impl Point3 {
     pub fn zero() -> Self {
         Default::default()
     }
-
-    pub fn to_vec3(&self) -> Vec3 {
-        Vec3 {
-            x: self.x,
-            y: self.y,
-            z: self.z,
-        }
-    }
 }
 
 impl ops::Add<Vec3> for Point3 {

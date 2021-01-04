@@ -32,14 +32,13 @@ impl Camera {
             y: viewport_height,
             ..Default::default()
         };
-        let lower_left_corner = (origin.to_vec3()
+        let lower_left_corner = origin
             - horizontal / 2.0
             - vertical / 2.0
             - Vec3 {
                 z: focal_length,
                 ..Default::default()
-            })
-        .to_point3();
+            };
 
         Self {
             aspect_ratio,
@@ -58,8 +57,8 @@ impl Camera {
     pub fn get_ray(&self, u: f64, v: f64) -> Ray {
         Ray {
             origin: self.origin,
-            direction: self.lower_left_corner.to_vec3() + u * self.horizontal + v * self.vertical
-                - self.origin.to_vec3(),
+            direction: self.lower_left_corner + u * self.horizontal + v * self.vertical
+                - self.origin,
         }
     }
 }
