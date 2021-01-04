@@ -24,9 +24,9 @@ impl Vec3 {
         let mut rng = rand::thread_rng();
         let mut v = Vec3::new();
         loop {
-            v.x = rng.gen();
-            v.y = rng.gen();
-            v.z = rng.gen();
+            v.x = rng.gen_range(-1.0..1.0);
+            v.y = rng.gen_range(-1.0..1.0);
+            v.z = rng.gen_range(-1.0..1.0);
             if v.mag_squared() < 1.0 {
                 return v;
             }
