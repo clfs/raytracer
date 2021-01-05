@@ -8,10 +8,12 @@ pub struct Ray {
 }
 
 impl Ray {
+    #[must_use]
     pub fn new() -> Self {
-        Default::default()
+        Self::default()
     }
 
+    #[must_use]
     pub fn at(&self, t: f64) -> Point3 {
         self.origin + t * (self.direction)
     }

@@ -10,10 +10,12 @@ pub struct Point3 {
 }
 
 impl Point3 {
+    #[must_use]
     pub fn new(x: f64, y: f64, z: f64) -> Self {
         Self { x, y, z }
     }
 
+    #[must_use]
     pub fn zero() -> Self {
         Point3::new(0., 0., 0.)
     }
