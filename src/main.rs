@@ -16,9 +16,8 @@ use rtlib::{
 };
 
 // Image
-const ASPECT_RATIO: f64 = 16. / 9.;
 const IMAGE_WIDTH: u32 = 400;
-const IMAGE_HEIGHT: u32 = (IMAGE_WIDTH as f64 / ASPECT_RATIO) as u32;
+const IMAGE_HEIGHT: u32 = 225;
 const SAMPLES_PER_PIXEL: u32 = 100;
 const MAX_DEPTH: u32 = 50;
 
@@ -100,8 +99,8 @@ fn main() {
 
         let mut color = Color::default();
         for _ in 0..SAMPLES_PER_PIXEL {
-            let u = (x as f64 + rng.gen::<f64>()) / ((IMAGE_WIDTH - 1) as f64);
-            let v = (yy as f64 + rng.gen::<f64>()) / ((IMAGE_HEIGHT - 1) as f64);
+            let u = (f64::from(x) + rng.gen::<f64>()) / f64::from(IMAGE_WIDTH - 1);
+            let v = (f64::from(yy) as f64 + rng.gen::<f64>()) / f64::from(IMAGE_HEIGHT - 1);
             let ray = camera.get_ray(u, v);
             color += ray_color(&ray, &world, MAX_DEPTH);
         }
@@ -123,12 +122,13 @@ fn ray_color(ray: &Ray, world: &HittableObjects, depth: u32) -> Color {
         Some(rec) => {
             let mut scattered = Ray::new();
             let mut attenuation = Color::default();
-            match rec
+            if rec
                 .mat
                 .scatter(&ray, &rec, &mut attenuation, &mut scattered)
             {
-                true => attenuation * ray_color(&scattered, &world, depth - 1),
-                false => Color::new(0., 0., 0.),
+                attenuation * ray_color(&scattered, &world, depth - 1)
+            } else {
+                Color::new(0., 0., 0.)
             }
         }
         None => {
