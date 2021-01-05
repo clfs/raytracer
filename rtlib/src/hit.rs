@@ -5,11 +5,11 @@ use crate::{material::Blank, ray::Ray};
 use crate::{material::Material, point3::Point3};
 
 pub trait Hittable {
-    fn hit(&self, ray: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord>;
+    fn hit(&self, ray: &Ray, t_min: f64, t_max: f64) -> Option<Record>;
 }
 
 #[derive(Clone)]
-pub struct HitRecord {
+pub struct Record {
     pub p: Point3,
     pub normal: Vec3,
     pub mat: Rc<dyn Material>,
@@ -17,7 +17,7 @@ pub struct HitRecord {
     pub front_face: bool,
 }
 
-impl HitRecord {
+impl Record {
     pub fn new() -> Self {
         Self {
             p: Point3::zero(),
@@ -57,7 +57,7 @@ impl HittableObjects {
 }
 
 impl Hittable for HittableObjects {
-    fn hit(&self, ray: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord> {
+    fn hit(&self, ray: &Ray, t_min: f64, t_max: f64) -> Option<Record> {
         let mut hit_record = None;
         let mut closest_so_far = t_max;
 

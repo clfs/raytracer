@@ -4,7 +4,7 @@ use crate::material::Material;
 use crate::point3::Point3;
 use crate::ray::Ray;
 use crate::{
-    hit::{HitRecord, Hittable},
+    hit::{Record, Hittable},
     material::Blank,
 };
 
@@ -25,7 +25,7 @@ impl Sphere {
 }
 
 impl Hittable for Sphere {
-    fn hit(&self, ray: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord> {
+    fn hit(&self, ray: &Ray, t_min: f64, t_max: f64) -> Option<Record> {
         // Compute the discriminant.
         let oc = ray.origin - self.center;
         let a = ray.direction.mag_squared();
@@ -49,7 +49,7 @@ impl Hittable for Sphere {
         };
 
         // Update the HitRecord.
-        let mut record = HitRecord::new();
+        let mut record = Record::new();
         match root {
             Some(v) => record.t = v,
             None => return None, // No hit.

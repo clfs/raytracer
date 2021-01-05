@@ -1,4 +1,4 @@
-use crate::{color::Color, hit::HitRecord, ray::Ray, vec3::Vec3};
+use crate::{color::Color, hit::Record, ray::Ray, vec3::Vec3};
 
 pub struct ScatterRecord {
     pub attenuation: Color,
@@ -6,7 +6,7 @@ pub struct ScatterRecord {
 }
 
 pub trait Material {
-    fn scatter(&self, ray_in: &Ray, rec: &HitRecord) -> Option<ScatterRecord>;
+    fn scatter(&self, ray_in: &Ray, rec: &Record) -> Option<ScatterRecord>;
 }
 
 pub struct Blank {}
@@ -18,7 +18,7 @@ impl Blank {
 }
 
 impl Material for Blank {
-    fn scatter(&self, _ray_in: &Ray, _rec: &HitRecord) -> Option<ScatterRecord> {
+    fn scatter(&self, _ray_in: &Ray, _rec: &Record) -> Option<ScatterRecord> {
         None
     }
 }
@@ -28,7 +28,7 @@ pub struct Lambertian {
 }
 
 impl Material for Lambertian {
-    fn scatter(&self, _ray_in: &Ray, rec: &HitRecord) -> Option<ScatterRecord> {
+    fn scatter(&self, _ray_in: &Ray, rec: &Record) -> Option<ScatterRecord> {
         let mut scatter_direction = rec.normal + Vec3::rand_unit();
 
         // Catch degenerate scatter direction.
@@ -51,7 +51,7 @@ pub struct Metal {
 }
 
 impl Material for Metal {
-    fn scatter(&self, ray_in: &Ray, rec: &HitRecord) -> Option<ScatterRecord> {
+    fn scatter(&self, ray_in: &Ray, rec: &Record) -> Option<ScatterRecord> {
         let reflected = ray_in.direction.unit().reflect(rec.normal);
         let scattered = Ray {
             origin: rec.p,
