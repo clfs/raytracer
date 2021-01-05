@@ -15,7 +15,7 @@ impl Point3 {
     }
 
     pub fn zero() -> Self {
-        Default::default()
+        Point3::new(0., 0., 0.)
     }
 }
 
@@ -31,11 +31,7 @@ impl ops::Sub for Point3 {
     type Output = Vec3;
 
     fn sub(self, rhs: Self) -> Self::Output {
-        Vec3 {
-            x: self.x - rhs.x,
-            y: self.y - rhs.y,
-            z: self.z - rhs.z,
-        }
+        Vec3::new(self.x - rhs.x, self.y - rhs.y, self.z - rhs.z)
     }
 }
 

@@ -24,21 +24,10 @@ impl Camera {
         let focal_length = 1.0;
 
         let origin = Point3::zero();
-        let horizontal = Vec3 {
-            x: viewport_width,
-            ..Default::default()
-        };
-        let vertical = Vec3 {
-            y: viewport_height,
-            ..Default::default()
-        };
-        let lower_left_corner = origin
-            - horizontal / 2.0
-            - vertical / 2.0
-            - Vec3 {
-                z: focal_length,
-                ..Default::default()
-            };
+        let horizontal = Vec3::new(viewport_width, 0., 0.);
+        let vertical = Vec3::new(0., viewport_height, 0.);
+        let lower_left_corner =
+            origin - horizontal / 2.0 - vertical / 2.0 - Vec3::new(0., 0., focal_length);
 
         Self {
             aspect_ratio,

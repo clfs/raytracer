@@ -21,7 +21,7 @@ impl HitRecord {
     pub fn new() -> Self {
         Self {
             p: Point3::zero(),
-            normal: Vec3::new(),
+            normal: Vec3::zero(),
             mat: Rc::new(Blank::new()),
             t: 0.,
             front_face: false,
