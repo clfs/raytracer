@@ -8,8 +8,8 @@ pub struct Color {
 }
 
 impl Color {
-    pub fn new() -> Self {
-        Default::default()
+    pub fn new(r: f64, g: f64, b: f64) -> Self {
+        Self { r, g, b }
     }
 
     pub fn to_rgb(&self, samples_per_pixel: u32) -> [u8; 3] {
@@ -26,11 +26,7 @@ impl ops::Add for Color {
     type Output = Self;
 
     fn add(self, rhs: Self) -> Self::Output {
-        Self {
-            r: self.r + rhs.r,
-            g: self.g + rhs.g,
-            b: self.b + rhs.b,
-        }
+        Color::new(self.r + rhs.r, self.g + rhs.g, self.b + rhs.b)
     }
 }
 
@@ -44,11 +40,7 @@ impl ops::Mul<Color> for f64 {
     type Output = Color;
 
     fn mul(self, rhs: Color) -> Self::Output {
-        Color {
-            r: self * rhs.r,
-            g: self * rhs.g,
-            b: self * rhs.b,
-        }
+        Color::new(self * rhs.r, self * rhs.g, self * rhs.b)
     }
 }
 
@@ -56,11 +48,7 @@ impl ops::Mul for Color {
     type Output = Self;
 
     fn mul(self, rhs: Self) -> Self::Output {
-        Color {
-            r: self.r * rhs.r,
-            g: self.g * rhs.g,
-            b: self.b * rhs.b,
-        }
+        Color::new(self.r * rhs.r, self.g * rhs.g, self.b * rhs.b)
     }
 }
 
@@ -68,10 +56,6 @@ impl ops::Sub for Color {
     type Output = Self;
 
     fn sub(self, rhs: Self) -> Self::Output {
-        Self {
-            r: self.r - rhs.r,
-            g: self.g - rhs.g,
-            b: self.b - rhs.b,
-        }
+        Color::new(self.r - rhs.r, self.g - rhs.g, self.b - rhs.b)
     }
 }

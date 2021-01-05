@@ -51,32 +51,16 @@ fn main() {
     let mut world = HittableObjects::new();
 
     let material_ground = Rc::new(Lambertian {
-        albedo: Color {
-            r: 0.8,
-            g: 0.8,
-            b: 0.0,
-        },
+        albedo: Color::new(0.8, 0.8, 0.),
     });
     let material_center = Rc::new(Lambertian {
-        albedo: Color {
-            r: 0.7,
-            g: 0.3,
-            b: 0.3,
-        },
+        albedo: Color::new(0.7, 0.3, 0.3),
     });
     let material_left = Rc::new(Metal {
-        albedo: Color {
-            r: 0.8,
-            g: 0.8,
-            b: 0.8,
-        },
+        albedo: Color::new(0.8, 0.8, 0.8),
     });
     let material_right = Rc::new(Metal {
-        albedo: Color {
-            r: 0.8,
-            g: 0.6,
-            b: 0.2,
-        },
+        albedo: Color::new(0.8, 0.6, 0.2),
     });
 
     world.add(Sphere {
@@ -114,7 +98,7 @@ fn main() {
             println!("Scanlines remaining: {}", yy);
         }
 
-        let mut color = Color::new();
+        let mut color: Color = Default::default();
         for _ in 0..SAMPLES_PER_PIXEL {
             let u = (x as f64 + rng.gen::<f64>()) / ((IMAGE_WIDTH - 1) as f64);
             let v = (yy as f64 + rng.gen::<f64>()) / ((IMAGE_HEIGHT - 1) as f64);
@@ -132,42 +116,24 @@ fn main() {
 
 fn ray_color(ray: &Ray, world: &HittableObjects, depth: u32) -> Color {
     if depth == 0 {
-        return Color {
-            r: 0.0,
-            g: 0.0,
-            b: 0.0,
-        };
+        return Color::new(0., 0., 0.);
     }
 
     match world.hit(&ray, 0.001, std::f64::INFINITY) {
         Some(rec) => {
             let mut scattered = Ray::new();
-            let mut attenuation = Color::new();
+            let mut attenuation: Color = Default::default();
             match rec
                 .mat
                 .scatter(&ray, &rec, &mut attenuation, &mut scattered)
             {
                 true => attenuation * ray_color(&scattered, &world, depth - 1),
-                false => Color {
-                    r: 0.,
-                    g: 0.,
-                    b: 0.,
-                },
+                false => Color::new(0., 0., 0.),
             }
         }
         None => {
             let t = 0.5 * (ray.direction.unit().y + 1.0);
-            (1.0 - t)
-                * Color {
-                    r: 1.0,
-                    g: 1.0,
-                    b: 1.0,
-                }
-                + t * Color {
-                    r: 0.5,
-                    g: 0.7,
-                    b: 1.0,
-                }
+            (1.0 - t) * Color::new(1., 1., 1.) + t * Color::new(0.5, 0.7, 1.)
         }
     }
 }
