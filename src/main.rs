@@ -123,17 +123,11 @@ fn ray_color(ray: &Ray, world: &HittableObjects, depth: u32) -> Color {
             let t = 0.5 * (ray.direction.unit().y + 1.);
             (1. - t) * Color::new(1., 1., 1.) + t * Color::new(0.5, 0.7, 1.)
         },
-        |rec| {
-            let mut scattered = Ray::new();
-            let mut attenuation = Color::default();
-            if rec
-                .mat
-                .scatter(&ray, &rec, &mut attenuation, &mut scattered)
-            {
-                attenuation * ray_color(&scattered, &world, depth - 1)
-            } else {
-                Color::new(0., 0., 0.)
-            }
+        |h_rec| {
+            h_rec.mat.scatter(&ray, &h_rec).map_or_else(
+                || Color::new(0., 0., 0.),
+                |s_rec| s_rec.attenuation * ray_color(&s_rec.scattered, &world, depth - 1),
+            )
         },
     )
 }
