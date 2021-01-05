@@ -17,6 +17,7 @@ pub struct Camera {
 impl Camera {
     // The author uses defaults. I'm unsure if we'll change these values later,
     // so this is messy at least for now.
+
     pub fn new() -> Self {
         let aspect_ratio = 16. / 9.;
         let viewport_height = 2.;

@@ -15,7 +15,6 @@ pub struct Sphere {
 }
 
 impl Sphere {
-    #[must_use]
     pub fn new() -> Self {
         Self {
             center: Point3::zero(),

@@ -30,10 +30,11 @@ impl Record {
 
     pub fn set_face_normal(&mut self, ray: &Ray, outward_normal: &Vec3) {
         self.front_face = ray.direction.dot(*outward_normal) < 0.;
-        self.normal = match self.front_face {
-            true => *outward_normal,
-            false => -*outward_normal,
-        }
+        self.normal = if self.front_face {
+            *outward_normal
+        } else {
+            -*outward_normal
+        };
     }
 }
 
@@ -44,7 +45,7 @@ pub struct HittableObjects {
 
 impl HittableObjects {
     pub fn new() -> Self {
-        Default::default()
+        Self::default()
     }
 
     pub fn clear(&mut self) {
@@ -62,12 +63,9 @@ impl Hittable for HittableObjects {
         let mut closest_so_far = t_max;
 
         for o in &self.objects {
-            match o.as_ref().hit(ray, t_min, closest_so_far) {
-                Some(rec) => {
-                    closest_so_far = rec.t;
-                    hit_record = Some(rec);
-                }
-                None => {}
+            if let Some(rec) = o.as_ref().hit(ray, t_min, closest_so_far) {
+                closest_so_far = rec.t;
+                hit_record = Some(rec);
             }
         }
 

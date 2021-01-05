@@ -14,18 +14,16 @@ pub struct Vec3 {
 }
 
 impl Vec3 {
-    #[must_use]
     pub fn new(x: f64, y: f64, z: f64) -> Self {
         Self { x, y, z }
     }
 
-    #[must_use]
     pub fn zero() -> Self {
         Vec3::new(0., 0., 0.)
     }
 
     // Exclusive, i.e. cannot return <1., 1., 1.>.
-    #[must_use]
+
     pub fn rand_in_unit_sphere() -> Self {
         let mut rng = rand::thread_rng();
         let mut v = Vec3::default();
@@ -40,7 +38,7 @@ impl Vec3 {
     }
 
     // Exclusive, i.e. cannot return <1., 1., 1.>.
-    #[must_use]
+
     pub fn rand_in_unit_hemisphere(normal: &Vec3) -> Self {
         let v = Vec3::rand_in_unit_sphere();
         if v.dot(*normal) > 0. {
@@ -50,38 +48,31 @@ impl Vec3 {
         }
     }
 
-    #[must_use]
     pub fn rand_unit() -> Self {
         Vec3::rand_in_unit_sphere().unit()
     }
 
-    #[must_use]
     pub fn is_near_zero(&self) -> bool {
         let s = 1e-8;
         self.x.abs() < s && self.y.abs() < s && self.z.abs() < s
     }
 
-    #[must_use]
     pub fn reflect(&self, normal: Vec3) -> Self {
         *self - 2. * self.dot(normal) * normal
     }
 
-    #[must_use]
     pub fn mag(self) -> f64 {
         self.mag_squared().sqrt()
     }
 
-    #[must_use]
     pub fn mag_squared(self) -> f64 {
         self.x * self.x + self.y * self.y + self.z * self.z
     }
 
-    #[must_use]
     pub fn dot(self, other: Self) -> f64 {
         self.x * other.x + self.y * other.y + self.z * other.z
     }
 
-    #[must_use]
     pub fn cross(self, other: Self) -> Self {
         Vec3::new(
             self.y * other.z - self.z * other.y,
@@ -90,7 +81,6 @@ impl Vec3 {
         )
     }
 
-    #[must_use]
     pub fn unit(self) -> Self {
         self / self.mag()
     }

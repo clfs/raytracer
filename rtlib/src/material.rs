@@ -12,7 +12,6 @@ pub trait Material {
 pub struct Blank {}
 
 impl Blank {
-    #[must_use]
     pub fn new() -> Self {
         Self {}
     }

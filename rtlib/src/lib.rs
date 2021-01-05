@@ -1,3 +1,5 @@
+#![deny(clippy::pedantic)]
+
 pub mod camera;
 pub mod color;
 pub mod hit;
