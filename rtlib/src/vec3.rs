@@ -97,11 +97,7 @@ impl ops::Add<Point3> for Vec3 {
     type Output = Point3;
 
     fn add(self, rhs: Point3) -> Self::Output {
-        Point3 {
-            x: self.x + rhs.x,
-            y: self.y + rhs.y,
-            z: self.z + rhs.z,
-        }
+        Point3::new(self.x + rhs.x, self.y + rhs.y, self.z + rhs.z)
     }
 }
 
@@ -169,10 +165,6 @@ impl ops::Sub<Point3> for Vec3 {
     type Output = Point3;
 
     fn sub(self, rhs: Point3) -> Self::Output {
-        Point3 {
-            x: self.x - rhs.x,
-            y: self.y - rhs.y,
-            z: self.z - rhs.z,
-        }
+        Point3::new(self.x - rhs.x, self.y - rhs.y, self.z - rhs.z)
     }
 }

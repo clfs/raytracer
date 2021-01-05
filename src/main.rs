@@ -80,38 +80,22 @@ fn main() {
     });
 
     world.add(Sphere {
-        center: Point3 {
-            x: 0.0,
-            y: -100.5,
-            z: -1.0,
-        },
+        center: Point3::new(0., -100.5, -1.),
         radius: 100.0,
         mat: material_ground,
     });
     world.add(Sphere {
-        center: Point3 {
-            x: 0.0,
-            y: 0.0,
-            z: -1.0,
-        },
+        center: Point3::new(0., 0., -1.),
         radius: 0.5,
         mat: material_center,
     });
     world.add(Sphere {
-        center: Point3 {
-            x: -1.0,
-            y: 0.0,
-            z: -1.0,
-        },
+        center: Point3::new(-1., 0., -1.),
         radius: 0.5,
         mat: material_left,
     });
     world.add(Sphere {
-        center: Point3 {
-            x: 1.0,
-            y: 0.0,
-            z: -1.0,
-        },
+        center: Point3::new(1., 0., -1.),
         radius: 0.5,
         mat: material_right,
     });
