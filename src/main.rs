@@ -118,22 +118,19 @@ fn ray_color(ray: &Ray, world: &HittableObjects, depth: u32) -> Color {
         return Color::new(0., 0., 0.);
     }
 
-    match world.hit(&ray, 0.001, std::f64::INFINITY) {
-        Some(rec) => {
-            let mut scattered = Ray::new();
-            let mut attenuation = Color::default();
-            if rec
-                .mat
-                .scatter(&ray, &rec, &mut attenuation, &mut scattered)
-            {
-                attenuation * ray_color(&scattered, &world, depth - 1)
-            } else {
-                Color::new(0., 0., 0.)
-            }
+    if let Some(rec) = world.hit(&ray, 0.001, std::f64::INFINITY) {
+        let mut scattered = Ray::new();
+        let mut attenuation = Color::default();
+        if rec
+            .mat
+            .scatter(&ray, &rec, &mut attenuation, &mut scattered)
+        {
+            attenuation * ray_color(&scattered, &world, depth - 1)
+        } else {
+            Color::new(0., 0., 0.)
         }
-        None => {
-            let t = 0.5 * (ray.direction.unit().y + 1.);
-            (1. - t) * Color::new(1., 1., 1.) + t * Color::new(0.5, 0.7, 1.)
-        }
+    } else {
+        let t = 0.5 * (ray.direction.unit().y + 1.);
+        (1. - t) * Color::new(1., 1., 1.) + t * Color::new(0.5, 0.7, 1.)
     }
 }
