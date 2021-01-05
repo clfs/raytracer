@@ -13,11 +13,11 @@ impl Color {
     }
 
     pub fn to_rgb(&self, samples_per_pixel: u32) -> [u8; 3] {
-        let scale = 1.0 / samples_per_pixel as f64;
+        let scale = 1. / samples_per_pixel as f64;
         [
-            (256.0 * (self.r * scale).sqrt().max(0.0).min(0.999)) as u8,
-            (256.0 * (self.g * scale).sqrt().max(0.0).min(0.999)) as u8,
-            (256.0 * (self.b * scale).sqrt().max(0.0).min(0.999)) as u8,
+            (256. * (self.r * scale).sqrt().max(0.).min(0.999)) as u8,
+            (256. * (self.g * scale).sqrt().max(0.).min(0.999)) as u8,
+            (256. * (self.b * scale).sqrt().max(0.).min(0.999)) as u8,
         ]
     }
 }

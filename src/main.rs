@@ -16,7 +16,7 @@ use rtlib::{
 };
 
 // Image
-const ASPECT_RATIO: f64 = 16.0 / 9.0;
+const ASPECT_RATIO: f64 = 16. / 9.;
 const IMAGE_WIDTH: u32 = 400;
 const IMAGE_HEIGHT: u32 = (IMAGE_WIDTH as f64 / ASPECT_RATIO) as u32;
 const SAMPLES_PER_PIXEL: u32 = 100;
@@ -65,7 +65,7 @@ fn main() {
 
     world.add(Sphere {
         center: Point3::new(0., -100.5, -1.),
-        radius: 100.0,
+        radius: 100.,
         mat: material_ground,
     });
     world.add(Sphere {
@@ -132,8 +132,8 @@ fn ray_color(ray: &Ray, world: &HittableObjects, depth: u32) -> Color {
             }
         }
         None => {
-            let t = 0.5 * (ray.direction.unit().y + 1.0);
-            (1.0 - t) * Color::new(1., 1., 1.) + t * Color::new(0.5, 0.7, 1.)
+            let t = 0.5 * (ray.direction.unit().y + 1.);
+            (1. - t) * Color::new(1., 1., 1.) + t * Color::new(0.5, 0.7, 1.)
         }
     }
 }

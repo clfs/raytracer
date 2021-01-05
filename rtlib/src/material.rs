@@ -76,6 +76,6 @@ impl Material for Metal {
             direction: reflected,
         };
         *attenuation = self.albedo;
-        scattered.direction.dot(rec.normal) > 0.0
+        scattered.direction.dot(rec.normal) > 0.
     }
 }

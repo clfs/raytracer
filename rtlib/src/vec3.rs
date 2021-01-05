@@ -20,7 +20,7 @@ impl Vec3 {
         Vec3::new(0., 0., 0.)
     }
 
-    // Exclusive, i.e. cannot return <1.0, 1.0, 1.0>.
+    // Exclusive, i.e. cannot return <1., 1., 1.>.
     pub fn rand_in_unit_sphere() -> Self {
         let mut rng = rand::thread_rng();
         let mut v: Vec3 = Default::default();
@@ -28,16 +28,16 @@ impl Vec3 {
             v.x = rng.gen_range(-1.0..1.0);
             v.y = rng.gen_range(-1.0..1.0);
             v.z = rng.gen_range(-1.0..1.0);
-            if v.mag_squared() < 1.0 {
+            if v.mag_squared() < 1. {
                 return v;
             }
         }
     }
 
-    // Exclusive, i.e. cannot return <1.0, 1.0, 1.0>.
+    // Exclusive, i.e. cannot return <1., 1., 1.>.
     pub fn rand_in_unit_hemisphere(normal: &Vec3) -> Self {
         let v = Vec3::rand_in_unit_sphere();
-        match v.dot(*normal) > 0.0 {
+        match v.dot(*normal) > 0. {
             true => v,
             false => -v,
         }
@@ -53,7 +53,7 @@ impl Vec3 {
     }
 
     pub fn reflect(&self, normal: Vec3) -> Self {
-        *self - 2.0 * self.dot(normal) * normal
+        *self - 2. * self.dot(normal) * normal
     }
 
     pub fn mag(self) -> f64 {

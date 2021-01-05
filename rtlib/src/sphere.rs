@@ -32,7 +32,7 @@ impl Hittable for Sphere {
         let half_b = oc.dot(ray.direction);
         let c = oc.mag_squared() - self.radius * self.radius;
         let discriminant = half_b * half_b - a * c;
-        if discriminant < 0.0 {
+        if discriminant < 0. {
             return None;
         }
 
