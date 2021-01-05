@@ -98,7 +98,7 @@ fn main() {
             println!("Scanlines remaining: {}", yy);
         }
 
-        let mut color: Color = Default::default();
+        let mut color = Color::default();
         for _ in 0..SAMPLES_PER_PIXEL {
             let u = (x as f64 + rng.gen::<f64>()) / ((IMAGE_WIDTH - 1) as f64);
             let v = (yy as f64 + rng.gen::<f64>()) / ((IMAGE_HEIGHT - 1) as f64);
@@ -122,7 +122,7 @@ fn ray_color(ray: &Ray, world: &HittableObjects, depth: u32) -> Color {
     match world.hit(&ray, 0.001, std::f64::INFINITY) {
         Some(rec) => {
             let mut scattered = Ray::new();
-            let mut attenuation: Color = Default::default();
+            let mut attenuation = Color::default();
             match rec
                 .mat
                 .scatter(&ray, &rec, &mut attenuation, &mut scattered)

@@ -23,7 +23,7 @@ impl Vec3 {
     // Exclusive, i.e. cannot return <1., 1., 1.>.
     pub fn rand_in_unit_sphere() -> Self {
         let mut rng = rand::thread_rng();
-        let mut v: Vec3 = Default::default();
+        let mut v = Vec3::default();
         loop {
             v.x = rng.gen_range(-1.0..1.0);
             v.y = rng.gen_range(-1.0..1.0);
