@@ -1,4 +1,5 @@
 use std::path::Path;
+use std::rc::Rc;
 
 use clap::Clap;
 use image::ImageBuffer;
@@ -7,11 +8,11 @@ use rand::Rng;
 use rtlib::{
     camera::Camera,
     color::Color,
-    hit::{HitRecord, Hittable, HittableObjects},
+    hit::{Hittable, HittableObjects},
+    material::{Lambertian, Metal},
     point3::Point3,
     ray::Ray,
     sphere::Sphere,
-    vec3::Vec3,
 };
 
 // Image
@@ -48,14 +49,36 @@ fn main() {
 
     // Set up the world.
     let mut world = HittableObjects::new();
-    world.add(Sphere {
-        center: Point3 {
-            x: 0.0,
-            y: 0.0,
-            z: -1.0,
+
+    let material_ground = Rc::new(Lambertian {
+        albedo: Color {
+            r: 0.8,
+            g: 0.8,
+            b: 0.0,
         },
-        radius: 0.5,
     });
+    let material_center = Rc::new(Lambertian {
+        albedo: Color {
+            r: 0.7,
+            g: 0.3,
+            b: 0.3,
+        },
+    });
+    let material_left = Rc::new(Metal {
+        albedo: Color {
+            r: 0.8,
+            g: 0.8,
+            b: 0.8,
+        },
+    });
+    let material_right = Rc::new(Metal {
+        albedo: Color {
+            r: 0.8,
+            g: 0.6,
+            b: 0.2,
+        },
+    });
+
     world.add(Sphere {
         center: Point3 {
             x: 0.0,
@@ -63,6 +86,34 @@ fn main() {
             z: -1.0,
         },
         radius: 100.0,
+        mat: material_ground,
+    });
+    world.add(Sphere {
+        center: Point3 {
+            x: 0.0,
+            y: 0.0,
+            z: -1.0,
+        },
+        radius: 0.5,
+        mat: material_center,
+    });
+    world.add(Sphere {
+        center: Point3 {
+            x: -1.0,
+            y: 0.0,
+            z: -1.0,
+        },
+        radius: 0.5,
+        mat: material_left,
+    });
+    world.add(Sphere {
+        center: Point3 {
+            x: 1.0,
+            y: 0.0,
+            z: -1.0,
+        },
+        radius: 0.5,
+        mat: material_right,
     });
 
     let camera = Camera::new();
@@ -104,31 +155,35 @@ fn ray_color(ray: &Ray, world: &HittableObjects, depth: u32) -> Color {
         };
     }
 
-    let mut rec = HitRecord::new();
-
-    if world.hit(&ray, 0.001, std::f64::INFINITY, &mut rec) {
-        let target: Point3 = rec.p + Vec3::rand_in_unit_hemisphere(&rec.normal);
-        return 0.5
-            * ray_color(
-                &Ray {
-                    origin: rec.p,
-                    direction: target - rec.p,
+    match world.hit(&ray, 0.001, std::f64::INFINITY) {
+        Some(rec) => {
+            let mut scattered = Ray::new();
+            let mut attenuation = Color::new();
+            match rec
+                .mat
+                .scatter(&ray, &rec, &mut attenuation, &mut scattered)
+            {
+                true => attenuation * ray_color(&scattered, &world, depth - 1),
+                false => Color {
+                    r: 0.,
+                    g: 0.,
+                    b: 0.,
                 },
-                &world,
-                depth - 1,
-            );
-    }
-
-    let t = 0.5 * (ray.direction.unit().y + 1.0);
-    return (1.0 - t)
-        * Color {
-            r: 1.0,
-            g: 1.0,
-            b: 1.0,
+            }
         }
-        + t * Color {
-            r: 0.5,
-            g: 0.7,
-            b: 1.0,
-        };
+        None => {
+            let t = 0.5 * (ray.direction.unit().y + 1.0);
+            (1.0 - t)
+                * Color {
+                    r: 1.0,
+                    g: 1.0,
+                    b: 1.0,
+                }
+                + t * Color {
+                    r: 0.5,
+                    g: 0.7,
+                    b: 1.0,
+                }
+        }
+    }
 }

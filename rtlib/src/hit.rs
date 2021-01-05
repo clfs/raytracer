@@ -1,22 +1,31 @@
-use crate::point3::Point3;
-use crate::ray::Ray;
+use std::rc::Rc;
+
 use crate::vec3::Vec3;
+use crate::{material::Blank, ray::Ray};
+use crate::{material::Material, point3::Point3};
 
 pub trait Hittable {
-    fn hit(&self, ray: &Ray, t_min: f64, t_max: f64, rec: &mut HitRecord) -> bool;
+    fn hit(&self, ray: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord>;
 }
 
-#[derive(Clone, Copy, Default)]
+#[derive(Clone)]
 pub struct HitRecord {
     pub p: Point3,
     pub normal: Vec3,
+    pub mat: Rc<dyn Material>,
     pub t: f64,
     pub front_face: bool,
 }
 
 impl HitRecord {
     pub fn new() -> Self {
-        Default::default()
+        Self {
+            p: Point3::new(),
+            normal: Vec3::new(),
+            mat: Rc::new(Blank::new()),
+            t: 0.,
+            front_face: false,
+        }
     }
 
     pub fn set_face_normal(&mut self, ray: &Ray, outward_normal: &Vec3) {
@@ -30,7 +39,7 @@ impl HitRecord {
 
 #[derive(Default)]
 pub struct HittableObjects {
-    pub objects: Vec<Box<dyn Hittable>>,
+    pub objects: Vec<Rc<dyn Hittable>>,
 }
 
 impl HittableObjects {
@@ -43,24 +52,25 @@ impl HittableObjects {
     }
 
     pub fn add<H: Hittable + 'static>(&mut self, h: H) {
-        self.objects.push(Box::new(h));
+        self.objects.push(Rc::new(h));
     }
 }
 
 impl Hittable for HittableObjects {
-    fn hit(&self, ray: &Ray, t_min: f64, t_max: f64, rec: &mut HitRecord) -> bool {
-        let mut tmp_rec = HitRecord::new();
-        let mut hit_anything = false;
+    fn hit(&self, ray: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord> {
+        let mut hit_record = None;
         let mut closest_so_far = t_max;
 
         for o in &self.objects {
-            if o.as_ref().hit(ray, t_min, closest_so_far, &mut tmp_rec) {
-                hit_anything = true;
-                closest_so_far = tmp_rec.t;
-                *rec = tmp_rec;
+            match o.as_ref().hit(ray, t_min, closest_so_far) {
+                Some(rec) => {
+                    closest_so_far = rec.t;
+                    hit_record = Some(rec);
+                }
+                None => {}
             }
         }
 
-        hit_anything
+        hit_record
     }
 }

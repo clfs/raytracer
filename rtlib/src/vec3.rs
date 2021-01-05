@@ -47,6 +47,15 @@ impl Vec3 {
         Vec3::rand_in_unit_sphere().unit()
     }
 
+    pub fn is_near_zero(&self) -> bool {
+        let s = 1e-8;
+        self.x.abs() < s && self.y.abs() < s && self.z.abs() < s
+    }
+
+    pub fn reflect(&self, normal: Vec3) -> Self {
+        *self - 2.0 * self.dot(normal) * normal
+    }
+
     pub fn mag(self) -> f64 {
         self.mag_squared().sqrt()
     }

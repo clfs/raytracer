@@ -1,21 +1,31 @@
-use crate::hit::{HitRecord, Hittable};
+use std::rc::Rc;
+
+use crate::material::Material;
 use crate::point3::Point3;
 use crate::ray::Ray;
+use crate::{
+    hit::{HitRecord, Hittable},
+    material::Blank,
+};
 
-#[derive(Default)]
 pub struct Sphere {
     pub center: Point3,
     pub radius: f64,
+    pub mat: Rc<dyn Material>,
 }
 
 impl Sphere {
     pub fn new() -> Self {
-        Default::default()
+        Self {
+            center: Point3::new(),
+            radius: 0.,
+            mat: Rc::new(Blank::new()),
+        }
     }
 }
 
 impl Hittable for Sphere {
-    fn hit(&self, ray: &Ray, t_min: f64, t_max: f64, rec: &mut HitRecord) -> bool {
+    fn hit(&self, ray: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord> {
         // Compute the discriminant.
         let oc = ray.origin - self.center;
         let a = ray.direction.mag_squared();
@@ -23,7 +33,7 @@ impl Hittable for Sphere {
         let c = oc.mag_squared() - self.radius * self.radius;
         let discriminant = half_b * half_b - a * c;
         if discriminant < 0.0 {
-            return false;
+            return None;
         }
 
         // Pick a root that lies in the acceptable range, if possible.
@@ -39,14 +49,16 @@ impl Hittable for Sphere {
         };
 
         // Update the HitRecord.
+        let mut record = HitRecord::new();
         match root {
-            Some(v) => rec.t = v,
-            None => return false, // No hit.
+            Some(v) => record.t = v,
+            None => return None, // No hit.
         }
-        rec.p = ray.at(rec.t);
-        let outward_normal = (rec.p - self.center) / self.radius;
-        rec.set_face_normal(ray, &outward_normal);
+        record.p = ray.at(record.t);
+        let outward_normal = (record.p - self.center) / self.radius;
+        record.set_face_normal(ray, &outward_normal);
+        record.mat = self.mat.clone();
 
-        true
+        Some(record)
     }
 }

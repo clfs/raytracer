@@ -52,6 +52,18 @@ impl ops::Mul<Color> for f64 {
     }
 }
 
+impl ops::Mul for Color {
+    type Output = Self;
+
+    fn mul(self, rhs: Self) -> Self::Output {
+        Color {
+            r: self.r * rhs.r,
+            g: self.g * rhs.g,
+            b: self.b * rhs.b,
+        }
+    }
+}
+
 impl ops::Sub for Color {
     type Output = Self;
 
