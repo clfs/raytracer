@@ -17,7 +17,7 @@ pub struct Sphere {
 impl Sphere {
     pub fn new() -> Self {
         Self {
-            center: Point3::new(),
+            center: Point3::zero(),
             radius: 0.,
             mat: Rc::new(Blank::new()),
         }

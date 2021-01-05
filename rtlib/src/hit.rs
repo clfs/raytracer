@@ -20,7 +20,7 @@ pub struct HitRecord {
 impl HitRecord {
     pub fn new() -> Self {
         Self {
-            p: Point3::new(),
+            p: Point3::zero(),
             normal: Vec3::new(),
             mat: Rc::new(Blank::new()),
             t: 0.,
