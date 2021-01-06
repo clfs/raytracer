@@ -55,11 +55,13 @@ fn main() {
     let material_ground = Rc::new(Lambertian {
         albedo: Color::new(0.8, 0.8, 0.),
     });
-    let material_center = Rc::new(Dielectric { ir: 1.5 });
+    let material_center = Rc::new(Lambertian {
+        albedo: Color::new(0.1, 0.2, 0.5),
+    });
     let material_left = Rc::new(Dielectric { ir: 1.5 });
     let material_right = Rc::new(Metal {
         albedo: Color::new(0.8, 0.6, 0.2),
-        fuzz: 1.0,
+        fuzz: 0.,
     });
 
     world.add(Sphere {
