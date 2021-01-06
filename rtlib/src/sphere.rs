@@ -15,18 +15,22 @@ pub struct Sphere {
 }
 
 impl Sphere {
-    pub fn new() -> Self {
+    pub fn new(center: &Point3, radius: f64, mat: Rc<dyn Material>) -> Self {
         Self {
-            center: Point3::zero(),
-            radius: 0.,
-            mat: Rc::new(Blank::new()),
+            center: *center,
+            radius,
+            mat,
         }
     }
 }
 
 impl Default for Sphere {
     fn default() -> Self {
-        Self::new()
+        Self {
+            center: Point3::zero(),
+            radius: 0.,
+            mat: Rc::new(Blank::new()),
+        }
     }
 }
 
