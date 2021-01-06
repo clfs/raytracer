@@ -20,6 +20,9 @@ const IMAGE_WIDTH: u32 = 400;
 const IMAGE_HEIGHT: u32 = 225;
 const SAMPLES_PER_PIXEL: u32 = 100;
 const MAX_DEPTH: u32 = 50;
+const VIEWPORT_HEIGHT: f64 = 2.;
+const VIEWPORT_WIDTH: f64 = (IMAGE_WIDTH as f64 / IMAGE_HEIGHT as f64) * VIEWPORT_HEIGHT;
+const FOCAL_LENGTH: f64 = 1.;
 
 #[derive(Clap)]
 #[clap(
@@ -83,7 +86,12 @@ fn main() {
         mat: material_right,
     });
 
-    let camera = Camera::new();
+    let camera = Camera::new(
+        VIEWPORT_WIDTH,
+        VIEWPORT_HEIGHT,
+        FOCAL_LENGTH,
+        Point3::zero(),
+    );
 
     let mut rng = rand::thread_rng();
 
