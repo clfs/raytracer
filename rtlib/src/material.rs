@@ -9,6 +9,7 @@ pub trait Material {
     fn scatter(&self, ray_in: &Ray, h_rec: &hit::Record) -> Option<Record>;
 }
 
+#[derive(Default)]
 pub struct Blank {}
 
 impl Blank {
@@ -23,6 +24,7 @@ impl Material for Blank {
     }
 }
 
+#[derive(Default)]
 pub struct Lambertian {
     pub albedo: Color,
 }
@@ -46,6 +48,7 @@ impl Material for Lambertian {
     }
 }
 
+#[derive(Default)]
 pub struct Metal {
     pub albedo: Color,
 }

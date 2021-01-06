@@ -17,6 +17,12 @@ pub struct Record {
     pub front_face: bool,
 }
 
+impl Default for Record {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Record {
     pub fn new() -> Self {
         Self {
