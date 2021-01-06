@@ -10,12 +10,12 @@ pub struct Point3 {
 }
 
 impl Point3 {
-    pub fn new(x: f64, y: f64, z: f64) -> Self {
+    pub const fn new(x: f64, y: f64, z: f64) -> Self {
         Self { x, y, z }
     }
 
-    pub fn zero() -> Self {
-        Point3::new(0., 0., 0.)
+    pub const fn zero() -> Self {
+        Self::new(0., 0., 0.)
     }
 }
 
@@ -23,7 +23,7 @@ impl ops::Add<Vec3> for Point3 {
     type Output = Self;
 
     fn add(self, rhs: Vec3) -> Self::Output {
-        Point3::new(self.x + rhs.x, self.y + rhs.y, self.z + rhs.z)
+        Self::new(self.x + rhs.x, self.y + rhs.y, self.z + rhs.z)
     }
 }
 
@@ -39,7 +39,7 @@ impl ops::Sub<Vec3> for Point3 {
     type Output = Self;
 
     fn sub(self, rhs: Vec3) -> Self::Output {
-        Point3::new(self.x - rhs.x, self.y - rhs.y, self.z - rhs.z)
+        Self::new(self.x - rhs.x, self.y - rhs.y, self.z - rhs.z)
     }
 }
 
@@ -47,6 +47,6 @@ impl ops::Div<f64> for Point3 {
     type Output = Self;
 
     fn div(self, rhs: f64) -> Self::Output {
-        Point3::new(self.x / rhs, self.y / rhs, self.z / rhs)
+        Self::new(self.x / rhs, self.y / rhs, self.z / rhs)
     }
 }

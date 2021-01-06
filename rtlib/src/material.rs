@@ -13,7 +13,7 @@ pub trait Material {
 pub struct Blank {}
 
 impl Blank {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self {}
     }
 }
@@ -51,14 +51,15 @@ impl Material for Lambertian {
 #[derive(Default)]
 pub struct Metal {
     pub albedo: Color,
+    pub fuzz: f64,
 }
 
 impl Material for Metal {
     fn scatter(&self, ray_in: &Ray, h_rec: &hit::Record) -> Option<Record> {
-        let reflected = ray_in.direction.unit().reflect(h_rec.normal);
+        let reflected = ray_in.direction.unit().reflect(&h_rec.normal);
         let scattered = Ray {
             origin: h_rec.p,
-            direction: reflected,
+            direction: reflected + self.fuzz * Vec3::rand_in_unit_sphere(),
         };
         if scattered.direction.dot(h_rec.normal) > 0. {
             Some(Record {

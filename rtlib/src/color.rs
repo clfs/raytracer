@@ -8,7 +8,7 @@ pub struct Color {
 }
 
 impl Color {
-    pub fn new(r: f64, g: f64, b: f64) -> Self {
+    pub const fn new(r: f64, g: f64, b: f64) -> Self {
         Self { r, g, b }
     }
 
@@ -28,7 +28,7 @@ impl ops::Add for Color {
     type Output = Self;
 
     fn add(self, rhs: Self) -> Self::Output {
-        Color::new(self.r + rhs.r, self.g + rhs.g, self.b + rhs.b)
+        Self::new(self.r + rhs.r, self.g + rhs.g, self.b + rhs.b)
     }
 }
 
@@ -50,7 +50,7 @@ impl ops::Mul for Color {
     type Output = Self;
 
     fn mul(self, rhs: Self) -> Self::Output {
-        Color::new(self.r * rhs.r, self.g * rhs.g, self.b * rhs.b)
+        Self::new(self.r * rhs.r, self.g * rhs.g, self.b * rhs.b)
     }
 }
 
@@ -58,6 +58,6 @@ impl ops::Sub for Color {
     type Output = Self;
 
     fn sub(self, rhs: Self) -> Self::Output {
-        Color::new(self.r - rhs.r, self.g - rhs.g, self.b - rhs.b)
+        Self::new(self.r - rhs.r, self.g - rhs.g, self.b - rhs.b)
     }
 }

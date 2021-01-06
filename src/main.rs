@@ -60,9 +60,11 @@ fn main() {
     });
     let material_left = Rc::new(Metal {
         albedo: Color::new(0.8, 0.8, 0.8),
+        fuzz: 0.3,
     });
     let material_right = Rc::new(Metal {
         albedo: Color::new(0.8, 0.6, 0.2),
+        fuzz: 1.0,
     });
 
     world.add(Sphere {
@@ -126,15 +128,15 @@ fn ray_color(ray: &Ray, world: &HittableObjects, depth: u32) -> Color {
         return Color::new(0., 0., 0.);
     }
 
-    world.hit(&ray, 0.001, std::f64::INFINITY).map_or_else(
+    world.hit(ray, 0.001, std::f64::INFINITY).map_or_else(
         || {
             let t = 0.5 * (ray.direction.unit().y + 1.);
             (1. - t) * Color::new(1., 1., 1.) + t * Color::new(0.5, 0.7, 1.)
         },
         |h_rec| {
-            h_rec.mat.scatter(&ray, &h_rec).map_or_else(
+            h_rec.mat.scatter(ray, &h_rec).map_or_else(
                 || Color::new(0., 0., 0.),
-                |s_rec| s_rec.attenuation * ray_color(&s_rec.scattered, &world, depth - 1),
+                |s_rec| s_rec.attenuation * ray_color(&s_rec.scattered, world, depth - 1),
             )
         },
     )
