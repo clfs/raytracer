@@ -60,21 +60,21 @@ impl Vec3 {
         *self - 2. * self.dot(*normal) * *normal
     }
 
-    pub fn mag(self) -> f64 {
+    pub fn mag(&self) -> f64 {
         self.mag_squared().sqrt()
     }
 
-    pub fn mag_squared(self) -> f64 {
+    pub fn mag_squared(&self) -> f64 {
         self.x
             .mul_add(self.x, self.y.mul_add(self.y, self.z * self.z))
     }
 
-    pub fn dot(self, other: Self) -> f64 {
+    pub fn dot(&self, other: Self) -> f64 {
         self.x
             .mul_add(other.x, self.y.mul_add(other.y, self.z * other.z))
     }
 
-    pub fn cross(self, other: Self) -> Self {
+    pub fn cross(&self, other: Self) -> Self {
         Self::new(
             self.y * other.z - self.z * other.y,
             self.z * other.x - self.x * other.z,
@@ -82,8 +82,8 @@ impl Vec3 {
         )
     }
 
-    pub fn unit(self) -> Self {
-        self / self.mag()
+    pub fn unit(&self) -> Self {
+        *self / self.mag()
     }
 }
 
