@@ -29,6 +29,12 @@ pub struct Lambertian {
     pub albedo: Color,
 }
 
+impl Lambertian {
+    pub const fn new(albedo: &Color) -> Self {
+        Self { albedo: *albedo }
+    }
+}
+
 impl Material for Lambertian {
     fn scatter(&self, _ray_in: &Ray, h_rec: &hit::Record) -> Option<Record> {
         let mut scatter_direction = h_rec.normal + Vec3::rand_unit();
@@ -54,6 +60,15 @@ pub struct Metal {
     pub fuzz: f64,
 }
 
+impl Metal {
+    pub const fn new(albedo: &Color, fuzz: f64) -> Self {
+        Self {
+            albedo: *albedo,
+            fuzz,
+        }
+    }
+}
+
 impl Material for Metal {
     fn scatter(&self, ray_in: &Ray, h_rec: &hit::Record) -> Option<Record> {
         let reflected = ray_in.direction.unit().reflect(&h_rec.normal);
@@ -77,6 +92,12 @@ pub struct Dielectric {
     pub ir: f64, // Index of refraction.
 }
 
+impl Dielectric {
+    pub const fn new(ir: f64) -> Self {
+        Self { ir }
+    }
+}
+
 impl Material for Dielectric {
     fn scatter(&self, ray_in: &Ray, h_rec: &hit::Record) -> Option<Record> {
         let attenuation = Color::new(1., 1., 1.);
@@ -85,28 +106,8 @@ impl Material for Dielectric {
         } else {
             self.ir
         };
+
         let unit_direction = ray_in.direction.unit();
-        /*let refracted = unit_direction.refract(&h_rec.normal, refraction_ratio);
-        Some(Record {
-            attenuation,
-            scattered: Ray {
-                origin: h_rec.p,
-                direction: refracted,
-            },
-        })*/
-
-        /*            double cos_theta = fmin(dot(-unit_direction, rec.normal), 1.0);
-        double sin_theta = sqrt(1.0 - cos_theta*cos_theta);
-
-        bool cannot_refract = refraction_ratio * sin_theta > 1.0;
-        vec3 direction;
-
-        if (cannot_refract)
-            direction = reflect(unit_direction, rec.normal);
-        else
-            direction = refract(unit_direction, rec.normal, refraction_ratio);
-
-        scattered = ray(rec.p, direction); */
         let cos_theta = -unit_direction.dot(h_rec.normal).min(1.);
         let sin_theta = (1. - cos_theta * cos_theta).sqrt();
 
@@ -116,6 +117,7 @@ impl Material for Dielectric {
         } else {
             unit_direction.refract(&h_rec.normal, refraction_ratio)
         };
+
         Some(Record {
             attenuation,
             scattered: Ray {
