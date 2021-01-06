@@ -22,10 +22,6 @@ const IMAGE_HEIGHT: u32 = 225;
 const SAMPLES_PER_PIXEL: u32 = 100;
 const MAX_DEPTH: u32 = 50;
 
-// Camera
-const ASPECT_RATIO: f64 = IMAGE_WIDTH as f64 / IMAGE_HEIGHT as f64;
-const VFOV: f64 = 20.; // degrees
-
 #[derive(Clap)]
 #[clap(
     version = "0.1.0",
@@ -77,12 +73,23 @@ fn main() {
     ));
     world.add(Sphere::new(&Point3::new(1., 0., -1.), 0.5, material_right));
 
+    // Set up camera.
+    let look_from = Point3::new(3., 3., 2.);
+    let look_at = Point3::new(0., 0., -1.);
+    let v_up = Vec3::new(0., 1., 0.);
+    let dist_to_focus = (look_from - look_at).mag();
+    let aperture = 2.;
+    let aspect_ratio: f64 = IMAGE_WIDTH as f64 / IMAGE_HEIGHT as f64;
+    let vfov: f64 = 20.; // degrees
+
     let camera = Camera::new(
-        &Point3::new(-2., 2., 1.),
-        &Point3::new(0., 0., -1.),
-        &Vec3::new(0., 1., 0.),
-        VFOV,
-        ASPECT_RATIO,
+        &look_from,
+        &look_at,
+        &v_up,
+        vfov,
+        aspect_ratio,
+        aperture,
+        dist_to_focus,
     );
 
     let mut rng = rand::thread_rng();

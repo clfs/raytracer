@@ -23,7 +23,6 @@ impl Vec3 {
     }
 
     // Exclusive, i.e. cannot return <1., 1., 1.>.
-
     pub fn rand_in_unit_sphere() -> Self {
         let mut rng = rand::thread_rng();
         let mut v = Self::default();
@@ -44,6 +43,18 @@ impl Vec3 {
             v
         } else {
             -v
+        }
+    }
+
+    pub fn rand_in_unit_disk() -> Self {
+        let mut rng = rand::thread_rng();
+        let mut v = Self::zero();
+        loop {
+            v.x = rng.gen_range(-1.0..1.0);
+            v.y = rng.gen_range(-1.0..1.0);
+            if v.mag_squared() < 1. {
+                return v;
+            }
         }
     }
 
