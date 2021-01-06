@@ -9,7 +9,7 @@ use rtlib::{
     camera::Camera,
     color::Color,
     hit::{Hittable, HittableObjects},
-    material::{Lambertian, Metal},
+    material::{Dielectric, Lambertian, Metal},
     point3::Point3,
     ray::Ray,
     sphere::Sphere,
@@ -55,13 +55,8 @@ fn main() {
     let material_ground = Rc::new(Lambertian {
         albedo: Color::new(0.8, 0.8, 0.),
     });
-    let material_center = Rc::new(Lambertian {
-        albedo: Color::new(0.7, 0.3, 0.3),
-    });
-    let material_left = Rc::new(Metal {
-        albedo: Color::new(0.8, 0.8, 0.8),
-        fuzz: 0.3,
-    });
+    let material_center = Rc::new(Dielectric { ir: 1.5 });
+    let material_left = Rc::new(Dielectric { ir: 1.5 });
     let material_right = Rc::new(Metal {
         albedo: Color::new(0.8, 0.6, 0.2),
         fuzz: 1.0,
