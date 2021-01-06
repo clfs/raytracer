@@ -1,3 +1,5 @@
+use rand::Rng;
+
 use crate::{color::Color, hit, ray::Ray, vec3::Vec3};
 
 pub struct Record {
@@ -96,6 +98,11 @@ impl Dielectric {
     pub const fn new(ir: f64) -> Self {
         Self { ir }
     }
+
+    fn reflectance(cosine: f64, ref_idx: f64) -> f64 {
+        let r0 = ((1. - ref_idx) / (1. + ref_idx)) * ((1. - ref_idx) / (1. + ref_idx));
+        (1. - r0).mul_add((1. - cosine).powi(5), r0)
+    }
 }
 
 impl Material for Dielectric {
@@ -108,11 +115,14 @@ impl Material for Dielectric {
         };
 
         let unit_direction = ray_in.direction.unit();
-        let cos_theta = -unit_direction.dot(h_rec.normal).min(1.);
+        let cos_theta = (-unit_direction).dot(h_rec.normal).min(1.);
         let sin_theta = (1. - cos_theta * cos_theta).sqrt();
 
         let cannot_refract = refraction_ratio * sin_theta > 1.;
-        let direction = if cannot_refract {
+        let mut rng = rand::thread_rng();
+        let direction = if cannot_refract
+            || Self::reflectance(cos_theta, refraction_ratio) > rng.gen::<f64>()
+        {
             unit_direction.reflect(&h_rec.normal)
         } else {
             unit_direction.refract(&h_rec.normal, refraction_ratio)

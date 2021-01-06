@@ -52,30 +52,35 @@ fn main() {
     // Set up the world.
     let mut world = HittableObjects::new();
 
-    let material_ground = Lambertian::new(&Color::new(0.8, 0.8, 0.));
-    let material_center = Lambertian::new(&Color::new(0.1, 0.2, 0.5));
-    let material_left = Dielectric::new(1.5);
-    let material_right = Metal::new(&Color::new(0.8, 0.6, 0.2), 0.);
+    let material_ground = Rc::new(Lambertian::new(&Color::new(0.8, 0.8, 0.)));
+    let material_center = Rc::new(Lambertian::new(&Color::new(0.1, 0.2, 0.5)));
+    let material_left = Rc::new(Dielectric::new(1.5));
+    let material_right = Rc::new(Metal::new(&Color::new(0.8, 0.6, 0.2), 0.));
 
     world.add(Sphere {
         center: Point3::new(0., -100.5, -1.),
         radius: 100.,
-        mat: Rc::new(material_ground),
+        mat: material_ground,
     });
     world.add(Sphere {
         center: Point3::new(0., 0., -1.),
         radius: 0.5,
-        mat: Rc::new(material_center),
+        mat: material_center,
     });
     world.add(Sphere {
         center: Point3::new(-1., 0., -1.),
         radius: 0.5,
-        mat: Rc::new(material_left),
+        mat: material_left.clone(),
+    });
+    world.add(Sphere {
+        center: Point3::new(-1., 0., -1.),
+        radius: -0.4,
+        mat: material_left,
     });
     world.add(Sphere {
         center: Point3::new(1., 0., -1.),
         radius: 0.5,
-        mat: Rc::new(material_right),
+        mat: material_right,
     });
 
     let camera = Camera::new(
