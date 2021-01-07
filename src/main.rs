@@ -1,5 +1,4 @@
 use std::path::Path;
-use std::rc::Rc;
 
 use clap::Clap;
 use image::ImageBuffer;
@@ -9,17 +8,16 @@ use rtlib::{
     camera::Camera,
     color::Color,
     hit::{Hittable, HittableObjects},
-    material::{Dielectric, Lambertian, Metal},
     point3::Point3,
     ray::Ray,
-    sphere::Sphere,
+    scene,
     vec3::Vec3,
 };
 
 // Image
-const IMAGE_WIDTH: u32 = 400;
-const IMAGE_HEIGHT: u32 = 225;
-const SAMPLES_PER_PIXEL: u32 = 100;
+const IMAGE_WIDTH: u32 = 1200;
+const IMAGE_HEIGHT: u32 = 800;
+const SAMPLES_PER_PIXEL: u32 = 500;
 const MAX_DEPTH: u32 = 50;
 
 #[derive(Clap)]
@@ -48,37 +46,14 @@ fn main() {
     let mut imgbuf = ImageBuffer::new(IMAGE_WIDTH, IMAGE_HEIGHT);
 
     // Set up the world.
-    let mut world = HittableObjects::new();
-
-    let material_ground = Rc::new(Lambertian::new(&Color::new(0.8, 0.8, 0.)));
-    let material_center = Rc::new(Lambertian::new(&Color::new(0.1, 0.2, 0.5)));
-    let material_left = Rc::new(Dielectric::new(1.5));
-    let material_right = Rc::new(Metal::new(&Color::new(0.8, 0.6, 0.2), 0.));
-
-    world.add(Sphere::new(
-        &Point3::new(0., -100.5, -1.),
-        100.,
-        material_ground,
-    ));
-    world.add(Sphere::new(&Point3::new(0., 0., -1.), 0.5, material_center));
-    world.add(Sphere::new(
-        &Point3::new(-1., 0., -1.),
-        0.5,
-        material_left.clone(),
-    ));
-    world.add(Sphere::new(
-        &Point3::new(-1., 0., -1.),
-        -0.45,
-        material_left,
-    ));
-    world.add(Sphere::new(&Point3::new(1., 0., -1.), 0.5, material_right));
+    let world = scene::random_scene();
 
     // Set up camera.
-    let look_from = Point3::new(3., 3., 2.);
-    let look_at = Point3::new(0., 0., -1.);
+    let look_from = Point3::new(13., 2., 3.);
+    let look_at = Point3::new(0., 0., 0.);
     let v_up = Vec3::new(0., 1., 0.);
-    let dist_to_focus = (look_from - look_at).mag();
-    let aperture = 2.;
+    let dist_to_focus = 10.;
+    let aperture = 0.1;
     let aspect_ratio: f64 = IMAGE_WIDTH as f64 / IMAGE_HEIGHT as f64;
     let vfov: f64 = 20.; // degrees
 

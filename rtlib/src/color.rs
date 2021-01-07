@@ -1,5 +1,7 @@
 use std::ops;
 
+use rand::Rng;
+
 #[derive(Clone, Copy, Default)]
 pub struct Color {
     pub r: f64,
@@ -10,6 +12,27 @@ pub struct Color {
 impl Color {
     pub const fn new(r: f64, g: f64, b: f64) -> Self {
         Self { r, g, b }
+    }
+
+    // Element-wise bounded [0, 1).
+    pub fn rand() -> Self {
+        let mut rng = rand::thread_rng();
+        Self {
+            r: rng.gen(),
+            g: rng.gen(),
+            b: rng.gen(),
+        }
+    }
+
+    // Element-wise bounded [a, b). Panics if impossible.
+    // TODO(clfs) Eliminate panics.
+    pub fn rand_in(lo: f64, hi: f64) -> Color {
+        let mut rng = rand::thread_rng();
+        Self {
+            r: rng.gen_range(lo..hi),
+            g: rng.gen_range(lo..hi),
+            b: rng.gen_range(lo..hi),
+        }
     }
 
     pub fn to_rgb(&self, samples_per_pixel: u32) -> [u8; 3] {
