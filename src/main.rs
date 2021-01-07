@@ -46,7 +46,7 @@ fn main() {
     let mut imgbuf = ImageBuffer::new(IMAGE_WIDTH, IMAGE_HEIGHT);
 
     // Set up the world.
-    let world = scene::random_scene();
+    let world = scene::random();
 
     // Set up camera.
     let look_from = Point3::new(13., 2., 3.);
@@ -54,7 +54,7 @@ fn main() {
     let v_up = Vec3::new(0., 1., 0.);
     let dist_to_focus = 10.;
     let aperture = 0.1;
-    let aspect_ratio: f64 = IMAGE_WIDTH as f64 / IMAGE_HEIGHT as f64;
+    let aspect_ratio = f64::from(IMAGE_WIDTH) / f64::from(IMAGE_HEIGHT);
     let vfov: f64 = 20.; // degrees
 
     let camera = Camera::new(

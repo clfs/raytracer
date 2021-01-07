@@ -26,7 +26,7 @@ impl Color {
 
     // Element-wise bounded [a, b). Panics if impossible.
     // TODO(clfs) Eliminate panics.
-    pub fn rand_in(lo: f64, hi: f64) -> Color {
+    pub fn rand_in(lo: f64, hi: f64) -> Self {
         let mut rng = rand::thread_rng();
         Self {
             r: rng.gen_range(lo..hi),
