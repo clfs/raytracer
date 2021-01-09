@@ -1,11 +1,10 @@
 use std::rc::Rc;
 
-use crate::material::Material;
-use crate::point3::Point3;
-use crate::ray::Ray;
 use crate::{
     hit::{Hittable, Record},
-    material::Blank,
+    material::{Blank, Material},
+    point3::Point3,
+    ray::Ray,
 };
 
 pub struct Sphere {

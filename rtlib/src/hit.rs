@@ -1,8 +1,11 @@
 use std::rc::Rc;
 
-use crate::vec3::Vec3;
-use crate::{material::Blank, ray::Ray};
-use crate::{material::Material, point3::Point3};
+use crate::{
+    material::{Blank, Material},
+    point3::Point3,
+    ray::Ray,
+    vec3::Vec3,
+};
 
 pub trait Hittable {
     fn hit(&self, ray: &Ray, t_min: f64, t_max: f64) -> Option<Record>;

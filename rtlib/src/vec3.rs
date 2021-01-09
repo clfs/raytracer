@@ -1,5 +1,3 @@
-#![warn(unused_results)]
-
 use std::ops;
 
 use rand::Rng;
